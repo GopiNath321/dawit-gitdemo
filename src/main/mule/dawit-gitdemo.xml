@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="61c35dcb-cfef-45d3-9934-75e7bb6d1b0d" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="choice-routerFlow" doc:id="e7a4d2ce-ed8e-49b2-89c1-35297348a256" >
+		<http:listener doc:name="Listener" doc:id="bbee0719-2c5b-49b5-a3c9-9e9db605eb48" config-ref="HTTP_Listener_config" path="/choice"/>
+		<choice doc:name="Choice" doc:id="6978d608-499b-4e90-9e23-cc3ca35a7f34">
+			<when expression='#[payload.name == "Subha"]'>
+				<ee:transform doc:name="Transform Message" doc:id="7dbd338f-e18b-46b7-bfcb-b6c0590a2b0b">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+"SUBHA"]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+					<logger level="INFO" doc:name="Logger" doc:id="5e2f5ae6-dd9b-4e0e-be8d-ff99634418bb" message="#[output application/json --- payload]" />
+			</when>
+			<when expression='#[attributes.headers.product == "phone"]'>
+				<ee:transform doc:name="Transform Message" doc:id="8fc8303b-64ab-4b11-9a49-345eec1145b2">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+"RAM"]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="af1298df-99b4-4ef3-875d-a4d6f14ee254" />
+			</when>
+			<otherwise>
+				<ee:transform doc:name="Transform Message" doc:id="228ffbbb-ee8f-4106-a9bf-9b6d55e4956e">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+"not matched"]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+					<logger level="INFO" doc:name="Logger" doc:id="056900f1-df6b-4e29-9eab-05775699050a" message="#[output application/json --- payload]" />
+			</otherwise>
+		</choice>
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="f245ff92-a117-4d9c-8abb-a0f54abaec4f" />
+	</flow></mule>
