@@ -45,7 +45,7 @@ output application/java
 "not matched"]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-					<logger level="INFO" doc:name="Logger" doc:id="056900f1-df6b-4e29-9eab-05775699050a" message="#[output application/json --- payload]" />
+					<logger level="INFO" doc:name="Logger" doc:id="056900f1-df6b-4e29-9eab-05775699050a" message="#[output application/json --- 'Updated data']" />
 			</otherwise>
 		</choice>
 		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="f245ff92-a117-4d9c-8abb-a0f54abaec4f" />
